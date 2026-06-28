@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crediario Digital - Escritorio Contabil Atual LTDA</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Crediario Digital - Escritorio Contabil Atual LTDA</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#clientes">Clientes</a></li>
+            <li><a href="#servicos">Servicos</a></li>
+            <li><a href="#pagamentos">Pagamentos</a></li>
+            <li><a href="#inadimplentes">Inadimplentes</a></li>
+            <li><a href="#relatorios">Relatorios</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="inicio">
+            <h2>Inicio</h2>
+            <p>
+                Bem-vindo ao Sistema de Crediario Digital. Este e o setup inicial
+                (Sprint 1). As funcionalidades de clientes, servicos, pagamentos,
+                inadimplentes e relatorios serao adicionadas nas proximas sprints.
+            </p>
+            <p>
+                Verificacao da integracao com a API: a lista abaixo e carregada
+                via <code>GET /api/categorias</code>.
+            </p>
+            <ul id="lista-categorias">
+                <li>Carregando categorias...</li>
+            </ul>
+        </section>
+
+        <section id="clientes">
+            <h2>Clientes</h2>
+            <p>Sera implementado na Sprint 2.</p>
+        </section>
+
+        <section id="servicos">
+            <h2>Servicos</h2>
+            <p>Sera implementado na Sprint 3.</p>
+        </section>
+
+        <section id="pagamentos">
+            <h2>Pagamentos</h2>
+            <p>Sera implementado na Sprint 3.</p>
+        </section>
+
+        <section id="inadimplentes">
+            <h2>Inadimplentes</h2>
+            <p>Sera implementado na Sprint 4.</p>
+        </section>
+
+        <section id="relatorios">
+            <h2>Relatorios</h2>
+            <p>Sera implementado na Sprint 4.</p>
+        </section>
+    </main>
+
+    <div id="mensagem-erro" role="alert" aria-live="polite"></div>
+
+    <script src="js/api.js"></script>
+    <script>
+        async function carregarCategorias() {
+            try {
+                const categorias = await window.api.get('/api/categorias');
+                const lista = document.getElementById('lista-categorias');
+                lista.innerHTML = '';
+                if (!categorias || categorias.length === 0) {
+                    lista.innerHTML = '<li>Nenhuma categoria cadastrada.</li>';
+                    return;
+                }
+                categorias.forEach(c => {
+                    const li = document.createElement('li');
+                    li.textContent = c.nome;
+                    lista.appendChild(li);
+                });
+            } catch (error) {
+                console.error('Falha ao carregar categorias:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', carregarCategorias);
+    </script>
+</body>
+</html>

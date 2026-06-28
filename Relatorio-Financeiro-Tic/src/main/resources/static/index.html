@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crediario Digital - Escritorio Contabil Atual LTDA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .form-group { margin-bottom: 10px; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 3px; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 6px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 3px;
+        }
+        .btn { padding: 6px 14px; cursor: pointer; border: none; border-radius: 3px; margin: 2px; }
+        .btn-primary { background: #007bff; color: #fff; }
+        .btn-danger { background: #dc3545; color: #fff; }
+        fieldset { margin-bottom: 20px; padding: 12px; border: 1px solid #ccc; border-radius: 4px; }
+        legend { font-weight: bold; padding: 0 6px; }
+        /* Dashboard cards */
+        #dashboard-cards { display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 0; }
+        .card { flex: 1; min-width: 160px; padding: 16px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,.12); }
+        .card-titulo { font-size: .85em; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 8px; opacity: .8; }
+        .card-valor { font-size: 1.5em; font-weight: bold; margin-bottom: 4px; }
+        .card-sub { font-size: .8em; opacity: .75; }
+        .card-cinza  { background: #6c757d; color: #fff; }
+        .card-amarelo { background: #ffc107; color: #212529; }
+        .card-verde  { background: #28a745; color: #fff; }
+        .card-vermelho { background: #dc3545; color: #fff; }
+    </style>
+</head>
+<body>
+    <header style="display:flex; justify-content:space-between; align-items:center;">
+        <h1>Crediario Digital - Escritorio Contabil Atual LTDA</h1>
+        <div style="display:flex; align-items:center; gap:12px;">
+            <span id="usuarioLogado" style="font-size:0.85rem; color:#fff; opacity:0.85;"></span>
+            <button class="btn btn-danger" onclick="logout()" style="padding:4px 10px; font-size:0.85rem;">Sair</button>
+        </div>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#clientes">Clientes</a></li>
+            <li><a href="#servicos">Servicos</a></li>
+            <li><a href="#pagamentos">Pagamentos</a></li>
+            <li><a href="#inadimplentes">Inadimplentes</a></li>
+            <li><a href="#relatorios">Relatorios</a></li>
+            <li id="nav-logs" style="display:none;"><a href="#logs">Logs</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <!-- INICIO / DASHBOARD -->
+        <section id="inicio">
+            <h2>Painel de Resumo</h2>
+            <div id="dashboard-cards">
+                <div class="card card-cinza">
+                    <div class="card-titulo">A Cobrar</div>
+                    <div class="card-valor">Carregando...</div>
+                </div>
+                <div class="card card-amarelo">
+                    <div class="card-titulo">Pendente</div>
+                    <div class="card-valor">Carregando...</div>
+                </div>
+                <div class="card card-verde">
+                    <div class="card-titulo">Recebido (mes atual)</div>
+                    <div class="card-valor">Carregando...</div>
+                </div>
+                <div class="card card-vermelho">
+                    <div class="card-titulo">Inadimplentes</div>
+                    <div class="card-valor">Carregando...</div>
+                </div>
+            </div>
+            <p style="font-size:.85em;color:#6c757d;">
+                Categorias disponiveis:
+                <span id="lista-categorias-inline">Carregando...</span>
+            </p>
+        </section>
+
+        <!-- CLIENTES (Sprint 2) -->
+        <section id="clientes">
+            <h2>Clientes</h2>
+
+            <fieldset>
+                <legend>Buscar Clientes</legend>
+                <div class="form-group">
+                    <label for="busca-nome-cliente">Buscar por nome:</label>
+                    <input type="text" id="busca-nome-cliente" placeholder="Digite o nome...">
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Cadastrar / Editar Cliente</legend>
+                <form id="form-cliente">
+                    <input type="hidden" id="cliente-id-edicao">
+                    <div class="form-group">
+                        <label for="cliente-tipo">Tipo:</label>
+                        <select id="cliente-tipo">
+                            <option value="PF">Pessoa Fisica (PF)</option>
+                            <option value="PJ">Pessoa Juridica (PJ)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cliente-nome">Nome: *</label>
+                        <input type="text" id="cliente-nome" required>
+                    </div>
+                    <div class="form-group" id="campo-sobrenome">
+                        <label for="cliente-sobrenome">Sobrenome:</label>
+                        <input type="text" id="cliente-sobrenome">
+                    </div>
+                    <div class="form-group">
+                        <label for="cliente-telefone">Telefone:</label>
+                        <input type="text" id="cliente-telefone">
+                    </div>
+                    <div class="form-group">
+                        <label for="cliente-email">Email:</label>
+                        <input type="email" id="cliente-email">
+                    </div>
+                    <div class="form-group">
+                        <label for="cliente-conta-gov">Conta Gov:</label>
+                        <input type="text" id="cliente-conta-gov">
+                    </div>
+                    <div class="form-group">
+                        <label for="cliente-outros">Outros:</label>
+                        <textarea id="cliente-outros" rows="2"></textarea>
+                    </div>
+                    <div class="form-group" id="campo-cpf">
+                        <label for="cliente-cpf">CPF:</label>
+                        <input type="text" id="cliente-cpf">
+                    </div>
+                    <div class="form-group" id="campo-cnpj" style="display:none">
+                        <label for="cliente-cnpj">CNPJ:</label>
+                        <input type="text" id="cliente-cnpj">
+                    </div>
+                    <div class="form-group" id="campo-razao-social" style="display:none">
+                        <label for="cliente-razao-social">Razao Social:</label>
+                        <input type="text" id="cliente-razao-social">
+                    </div>
+                    <button type="submit" id="btn-salvar-cliente" class="btn btn-primary">Cadastrar</button>
+                    <button type="button" id="btn-cancelar-edicao" class="btn" style="display:none">Cancelar</button>
+                </form>
+            </fieldset>
+
+            <fieldset>
+                <legend>Clientes Ativos</legend>
+                <div id="lista-clientes-container"><p>Carregando...</p></div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Clientes Excluidos</legend>
+                <div id="lista-excluidos-container"><p>Carregando...</p></div>
+            </fieldset>
+        </section>
+
+        <!-- SERVICOS (Sprint 3) -->
+        <section id="servicos">
+            <h2>Servicos</h2>
+
+            <fieldset>
+                <legend>Selecionar Cliente para Ver Servicos</legend>
+                <div class="form-group">
+                    <label for="servicos-cliente-id">ID do Cliente:</label>
+                    <input type="number" id="servicos-cliente-id" placeholder="Informe o ID do cliente" min="1">
+                    <button type="button" id="btn-carregar-servicos" class="btn btn-primary">Carregar Servicos</button>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Registrar Novo Servico</legend>
+                <form id="form-servico">
+                    <div class="form-group">
+                        <label for="servico-descricao">Descricao: *</label>
+                        <textarea id="servico-descricao" rows="2" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="servico-data">Data: *</label>
+                        <input type="date" id="servico-data" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="servico-valor">Valor (R$): *</label>
+                        <input type="number" id="servico-valor" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="servico-categoria">Categoria: *</label>
+                        <select id="servico-categoria" required>
+                            <option value="">Carregando categorias...</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Registrar Servico</button>
+                </form>
+            </fieldset>
+
+            <fieldset>
+                <legend>Servicos do Cliente</legend>
+                <div id="lista-servicos-container"><p>Selecione um cliente acima.</p></div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Servicos Excluidos</legend>
+                <div id="lista-servicos-excluidos-container"><p>Carregando...</p></div>
+            </fieldset>
+        </section>
+
+        <!-- PAGAMENTOS (Sprint 3) -->
+        <section id="pagamentos">
+            <h2>Pagamentos Parciais</h2>
+
+            <div id="form-pagamento-container" style="display:none">
+                <fieldset>
+                    <legend>Registrar Pagamento para: <span id="pagamento-servico-label"></span></legend>
+                    <form id="form-pagamento">
+                        <div class="form-group">
+                            <label for="pagamento-valor">Valor Pago (R$): *</label>
+                            <input type="number" id="pagamento-valor" step="0.01" min="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="pagamento-data">Data do Pagamento: *</label>
+                            <input type="date" id="pagamento-data" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Registrar Pagamento</button>
+                        <button type="button" id="btn-fechar-pagamento" class="btn">Fechar</button>
+                    </form>
+                </fieldset>
+            </div>
+
+            <fieldset>
+                <legend>Historico de Pagamentos</legend>
+                <div id="lista-pagamentos-container"><p>Clique em "Registrar Pagamento" em um servico PENDENTE.</p></div>
+            </fieldset>
+        </section>
+
+        <!-- INADIMPLENTES (Sprint 4) -->
+        <section id="inadimplentes">
+            <h2>Inadimplentes</h2>
+            <fieldset>
+                <legend>Clientes com saldo em aberto (status PENDENTE, saldo &gt; 0)</legend>
+                <div id="tabela-inadimplentes-container"><p>Carregando...</p></div>
+            </fieldset>
+        </section>
+
+        <!-- RELATORIOS (Sprint 4) -->
+        <section id="relatorios">
+            <h2>Relatorios</h2>
+
+            <fieldset>
+                <legend>Relatorio de Faturamento por Periodo</legend>
+                <form id="form-faturamento">
+                    <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
+                        <div class="form-group" style="flex:1;min-width:150px;">
+                            <label for="fat-inicio">Data Inicio: *</label>
+                            <input type="date" id="fat-inicio" required>
+                        </div>
+                        <div class="form-group" style="flex:1;min-width:150px;">
+                            <label for="fat-fim">Data Fim: *</label>
+                            <input type="date" id="fat-fim" required>
+                        </div>
+                        <div style="margin-bottom:10px;">
+                            <button type="submit" class="btn btn-primary">Gerar Relatorio</button>
+                        </div>
+                    </div>
+                </form>
+                <div id="resultado-faturamento"></div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Historico Completo por Cliente</legend>
+                <form id="form-historico-cliente">
+                    <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
+                        <div class="form-group" style="flex:1;min-width:150px;">
+                            <label for="hist-cliente-id">ID do Cliente: *</label>
+                            <input type="number" id="hist-cliente-id" min="1" required>
+                        </div>
+                        <div style="margin-bottom:10px;">
+                            <button type="submit" class="btn btn-primary">Buscar Historico</button>
+                        </div>
+                    </div>
+                </form>
+                <div id="resultado-historico"></div>
+            </fieldset>
+        </section>
+
+        <!-- LOGS DE AUDITORIA (Sprint 5 - apenas ADMIN) -->
+        <section id="logs" style="display:none;">
+            <h2>Logs de Auditoria</h2>
+            <fieldset>
+                <legend>Registro de acoes do sistema (somente ADMIN)</legend>
+                <button class="btn btn-primary" onclick="if(window.logs) window.logs.carregar()">Atualizar</button>
+                <div id="logsContainer" style="margin-top:12px;"><p>Carregando...</p></div>
+            </fieldset>
+        </section>
+    </main>
+
+    <div id="mensagem-erro" role="alert" aria-live="polite"
+         style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+                background:#dc3545;color:#fff;padding:10px 20px;border-radius:4px;
+                display:none;z-index:9999;max-width:80%;text-align:center;"></div>
+
+    <script src="js/api.js"></script>
+    <script>
+        // Carregar categorias inline na secao inicio
+        async function carregarCategoriasInline() {
+            try {
+                var response = await fetch('/api/categorias');
+                if (!response.ok) throw new Error('Erro ' + response.status);
+                var cats = await response.json();
+                var el = document.getElementById('lista-categorias-inline');
+                if (el) el.textContent = (cats || []).map(function (c) { return c.nome; }).join(', ');
+            } catch (e) {
+                console.error('Falha ao carregar categorias:', e);
+                var el = document.getElementById('lista-categorias-inline');
+                if (el) el.textContent = 'Indisponível';
+            }
+        }
+
+        // Botao fechar formulario de pagamento
+        document.getElementById('btn-fechar-pagamento').addEventListener('click', function () {
+            document.getElementById('form-pagamento-container').style.display = 'none';
+        });
+
+        // Botao carregar servicos por cliente ID
+        document.getElementById('btn-carregar-servicos').addEventListener('click', function () {
+            var clienteId = document.getElementById('servicos-cliente-id').value;
+            if (!clienteId) { alert('Informe o ID do cliente.'); return; }
+            if (window.servicos && window.servicos.carregarServicos) {
+                window.servicos.carregarServicos(Number(clienteId));
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', carregarCategoriasInline);
+    </script>
+    <script src="js/auth.js"></script>
+    <script src="js/clientes.js"></script>
+    <script src="js/servicos.js"></script>
+    <script src="js/pagamentos.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/inadimplentes.js"></script>
+    <script src="js/relatorios.js"></script>
+    <script src="js/logs.js"></script>
+</body>
+</html>
